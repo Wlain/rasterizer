@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Clion
+*-build-*
+build-*
+build/
+.idea/
+compiledDependencies/
+*.user
+local.cmake
+Pods/
+xcuserdata/
+*.lock
