@@ -7,6 +7,7 @@
 
 namespace rasterizer
 {
+/// Defines a 2-element floating point vector.
 class Vector2
 {
 public:
@@ -32,6 +33,7 @@ public:
     float distanceSquared(const Vector2& v) const;
     float dot(const Vector2& v) const;
     static float dot(const Vector2& v1, const Vector2& v2);
+    float cross(const Vector2& v) const;
     float length() const;
     float lengthSquared() const;
     void negate();
@@ -62,7 +64,7 @@ public:
     inline bool operator==(const Vector2& v) const;
     inline bool operator!=(const Vector2& v) const;
 
-private:
+public:
     float x = 0.0f;
     float y = 0.0f;
 };

@@ -3,7 +3,7 @@
 //
 #include "vector2.h"
 
-#include "commonDefine.h"
+#include "common/commonDefine.h"
 
 namespace rasterizer
 {
@@ -72,7 +72,7 @@ bool Vector2::isOne() const
 float Vector2::angle(const Vector2& v1, const Vector2& v2)
 {
     float dz = v1.x * v2.y - v1.y * v2.x;
-    return atan2f(fabsf(dz) + MATH_FLOAT_SMALL, dot(v1, v2));
+    return atan2f(fabsf(dz) + FLT_MIN, dot(v1, v2));
 }
 
 void Vector2::add(const Vector2& v)
@@ -156,7 +156,7 @@ void Vector2::normalize(Vector2* dst) const
         dst->y = y;
     }
     float n = length();
-    if (n == 1.0f || n < MATH_TOLERANCE)
+    if (n == 1.0f || n < FLT_MIN)
     {
         return;
     }
@@ -240,5 +240,10 @@ void Vector2::smooth(const Vector2& target, float elapsedTime, float responseTim
     {
         *this += (target - *this) * (elapsedTime / (elapsedTime + responseTime));
     }
+}
+
+float Vector2::cross(const Vector2& v) const
+{
+    return y * v.x - x * v.y;
 }
 } // namespace rasterizer
