@@ -35,6 +35,12 @@ public:
     ~Rasterizer();
     explicit Rasterizer(const Rasterizer&) = delete;
     Rasterizer& operator=(const Rasterizer&) = delete;
+    inline Camera& refCamera();
+    inline std::vector<float>& refBufferZ();
+    inline std::vector<unsigned short>& refIndices();
+    inline std::vector<std::array<unsigned char, 3>>& refColor();
+    inline std::vector<Vector4>& refPosition();
+    inline std::vector<std::vector<float>>& refFramebuffer();
     void initWithFrameBufferSize(int width, int height);
     inline Primitive topologyType() const;
     inline void setTopologyType(Primitive type);
@@ -48,21 +54,6 @@ public:
     void drawTriangles();
     void clear(Buffers buffers);
     void saveResult();
-    inline Camera& refCamera();
-    inline std::vector<float>& refBufferZ();
-    inline std::vector<unsigned short>& refIndices();
-    inline std::vector<std::array<unsigned char, 3>>& refColor();
-    inline std::vector<Vector4>& refPosition();
-    inline std::vector<std::vector<float>>& refFramebuffer();
-
-    /**
-     * 判断当前点是否在三角形内部
-     * @param point 当前点坐标
-     * @param vertexes 三角形顶点坐标
-     * @param barycentricCoord 中心坐标
-     * @return
-     */
-    static bool insideTriangle(const Vector3& point, const std::vector<Vector4>& vertexes, std::vector<float>& barycentricCoord);
 
 private:
     Primitive m_topologyType = Primitive::Triangles;

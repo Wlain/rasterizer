@@ -37,8 +37,6 @@ public:
     static void createOrthographic(float width, float height, float zNearPlane, float zFarPlane, Matrix4* dst);
     static void createOrthographicOffCenter(float left, float right, float bottom, float top,
                                             float zNearPlane, float zFarPlane, Matrix4* dst);
-    static void createBillboard(const Vector3& objectPosition, const Vector3& cameraPosition,
-                                const Vector3& cameraUpVector, Matrix4* dst);
     static void createScale(const Vector3& scale, Matrix4* dst);
     static void createScale(float xScale, float yScale, float zScale,Matrix4* dst);
     static void createRotation(const Vector3& axis, float angle, Matrix4* dst);
@@ -111,10 +109,6 @@ public:
     inline const Matrix4 operator*(const Matrix4& m) const;
     inline Matrix4& operator*=(const Matrix4& m);
 
-private:
-    static void createBillboardHelper(const Vector3& objectPosition, const Vector3& cameraPosition,
-                                      const Vector3& cameraUpVector, const Vector3* cameraForwardVector,
-                                      Matrix4* dst);
 
 private:
     /** 内存上的排布
