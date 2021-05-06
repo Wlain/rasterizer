@@ -2,7 +2,7 @@
 #include "rasterizer.h"
 
 using namespace rasterizer;
-#define RENDER_WIDTH 800
+#define RENDER_WIDTH 600
 #define RENDER_HEIGHT 600
 
 int main()
@@ -10,9 +10,9 @@ int main()
     /// 创建模型
     Matrix4 modelMatrix;
     Matrix4 viewMatrix{};
-    Matrix4::createLookAt({ 0.0f, 0.0f, 3.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, &viewMatrix);
+    Matrix4::createLookAt({ 0.0f, 0.0f, 5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, &viewMatrix);
     Matrix4 projectionMatrix{};
-    Matrix4::createPerspective(60.0f, (float)RENDER_WIDTH / (float)RENDER_HEIGHT, 0.1f, 100.0f, &projectionMatrix);
+    Matrix4::createPerspective(45.0f, (float)RENDER_WIDTH / (float)RENDER_HEIGHT, 0.1, 100.0f, &projectionMatrix);
     /// 创建图元
     Rasterizer triangle;
     triangle.initWithFrameBufferSize(RENDER_WIDTH, RENDER_HEIGHT);
@@ -25,12 +25,12 @@ int main()
     /// 原始三角形顶点坐标,物体坐标系
     auto& vertexes = triangle.refPosition();
     vertexes.reserve(vertexSize);
-    vertexes.emplace_back(-2.0f, -1.0f, 0.0f);
-    vertexes.emplace_back(2.0f, -1.0f, 1.0f);
-    vertexes.emplace_back(-1.0f, 1.0f, -3.0f);
-    vertexes.emplace_back(-2.0f, -1.0f, 1.0f);
-    vertexes.emplace_back(2.0f, -1.0f, 0.0f);
-    vertexes.emplace_back(1.0f, 1.0f, -3.0f);
+    vertexes.emplace_back(2.0f, 0.0f, -2.0f, 1.0f);
+    vertexes.emplace_back(0.0f, 2.0f, -2.0f, 1.0f);
+    vertexes.emplace_back(-2.0f, 0.0f, -2.0f, 1.0f);
+    vertexes.emplace_back(4.0f, -1.0f, -5.0f, 1.0f);
+    vertexes.emplace_back(2.0f, 2.0f, -5.0f, 1.0f);
+    vertexes.emplace_back(0.0f, 0.0f, -5.0f, 1.0f);
     /// 索引数组
     auto& indices = triangle.refIndices();
     indices.reserve(vertexSize);
@@ -49,7 +49,7 @@ int main()
     /// 几何变换
     triangle.setGeometricTransform();
     /// 清屏
-    triangle.clear();
+    triangle.clear(Rasterizer::Buffers::Depth & Rasterizer::Buffers::Color);
     /// 写入framebuffer
     triangle.draw();
     /// 设置保存的路径

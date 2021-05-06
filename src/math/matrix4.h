@@ -7,6 +7,7 @@
 
 #include "vector2.h"
 #include "vector3.h"
+#include "vector4.h"
 
 namespace rasterizer
 {
@@ -24,7 +25,7 @@ public:
     Matrix4(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24,
             float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44);
     explicit Matrix4(const float* copy);
-    explicit Matrix4(const Matrix4& copy);
+    Matrix4(const Matrix4& copy);
     ~Matrix4();
     static const Matrix4& identity();
     static const Matrix4& zero();
@@ -93,8 +94,8 @@ public:
     static void subtract(const Matrix4& m1, const Matrix4& m2, Matrix4* dst);
     void transformPoint(Vector3* point) const;
     void transformPoint(const Vector3& point, Vector3* dst) const;
-    void transformVector(Vector3* vector) const;
-    void transformVector(const Vector3& vector, Vector3* dst) const;
+    void transformVector(Vector4* vector) const;
+    void transformVector(const Vector4& vector, Vector4* dst) const;
     void transformVector(float x, float y, float z, float w, Vector3* dst) const;
     void translate(float x, float y, float z);
     void translate(float x, float y, float z, Matrix4* dst) const;

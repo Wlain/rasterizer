@@ -11,19 +11,16 @@ Camera::~Camera() = default;
 
 void Camera::setModelMatrix(const Matrix4& matrix)
 {
+    m_modelMatrix = matrix;
 }
 
 void Camera::setViewMatrix(const Matrix4& matrix)
 {
-}
-
-const Matrix4& Camera::getViewProjectionMatrix() const
-{
-    static Matrix4 m;
-    return m;
+    m_viewMatrix = matrix;
 }
 
 void Camera::setProjectionMatrix(const Matrix4& matrix)
 {
+    m_projectionMatrix = matrix;
 }
 }

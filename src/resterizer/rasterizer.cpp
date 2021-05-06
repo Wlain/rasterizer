@@ -18,42 +18,37 @@ void Rasterizer::initWithFrameBufferSize(int width, int height)
     m_framebufferHeight = height;
     /// 初始化Buffer，FrameBuffer
     size_t bufferSize = m_framebufferWidth * m_framebufferHeight;
-    m_zBuffer.resize(bufferSize, FLT_MAX);
+    m_zBuffer.resize(bufferSize, std::numeric_limits<float>::infinity());
     m_framebuffer.resize(bufferSize, std::vector<float>(4, 0.0f));
 }
 
 void Rasterizer::setGeometricTransform()
 {
-    const auto w = 1.0f; /// 暂时写死为1
-    float halfScreenWidth = (float)m_framebufferWidth / 2.0f;
-    float halfScreenHeight = (float)m_framebufferHeight / 2.0f;
     for (auto& v : m_position)
     {
         /// 模型变换 -> 世界坐标系
-        m_camera.getModelMatrix().transformPoint(&v);
+        v = m_camera.getModelMatrix() * v;
         /// 视图变换 -> 观察者坐标系
-        m_camera.getViewMatrix().transformPoint(&v);
+        v = m_camera.getViewMatrix() * v;
         /// 投影变换 -> 裁剪坐标系
-        m_camera.getProjectionMatrix().transformPoint(&v);
+        v = m_camera.getProjectionMatrix() * v;
         /// 透视除法 -> 规范化坐标系
-        v.x / w;
-        v.y / w;
-        v.z / w;
+        v.perspectiveDivision();
         /// 视口变换 -> 屏幕坐标系
+        v.x = (v.x + 1.0f) * (float)m_framebufferWidth * 0.5f;
+        v.y = (1.0f - v.y) * (float)m_framebufferHeight * 0.5f;
         /**
         * 视口变换的详细步骤：
         * 1.丢弃z值
         * 2.缩放
         * 3.平移
         * */
-        v.x = (v.x + 1.0f) + halfScreenWidth;
-        v.y = (1.0f - v.y) + halfScreenHeight;
     }
 }
 
-bool Rasterizer::insideTriangle(const Vector3& point, const std::vector<Vector3>& vertexes, std::vector<float>& barycentricCoord)
+bool Rasterizer::insideTriangle(const Vector3& point, const std::vector<Vector4>& vertexes, std::vector<float>& barycentricCoord)
 {
-    RAS_ASSERT(vertexes.size() == 3)
+    RAS_ASSERT(vertexes.size() == 3);
     Vector2 abVector(vertexes[1].x - vertexes[0].x, vertexes[1].y - vertexes[0].y);
     Vector2 bcVector(vertexes[2].x - vertexes[1].x, vertexes[2].y - vertexes[1].y);
     Vector2 caVector(vertexes[0].x - vertexes[2].x, vertexes[0].y - vertexes[2].y);
@@ -68,7 +63,7 @@ bool Rasterizer::insideTriangle(const Vector3& point, const std::vector<Vector3>
     result[1] = bcVector.cross(bpVector);
     result[2] = caVector.cross(cpVector);
 
-    if ((result[0] > 0.0f && result[1] > 0.0f && result[2] > 0.0f) && (result[0] < 0.0f && result[1] < 0.0f && result[2] < 0.0f))
+    if ((result[0] > 0.0f && result[1] > 0.0f && result[2] > 0.0f) || (result[0] < 0.0f && result[1] < 0.0f && result[2] < 0.0f))
     {
         /// 计算重心坐标系
         float triangleArea = std::fabsf(abVector.cross(bcVector));
@@ -92,7 +87,7 @@ void Rasterizer::draw()
             for (int triangleIndex = 0; triangleIndex < triangleNum; ++triangleIndex)
             {
                 /// 顶点坐标, 默认逆时针
-                std::vector<Vector3> points;
+                std::vector<Vector4> points;
                 points.push_back(m_position[m_indices[triangleIndex * 3 + 0]]);
                 points.push_back(m_position[m_indices[triangleIndex * 3 + 1]]);
                 points.push_back(m_position[m_indices[triangleIndex * 3 + 2]]);
@@ -106,13 +101,14 @@ void Rasterizer::draw()
                 /// 根据公式： 1/z = λ * 1/z0 + (1-λ) * 1/z1
                 pixel.z = 1.0f / (barycentricCoord[0] / points[0].z + barycentricCoord[1] / points[1].z + barycentricCoord[2] / points[2].z);
                 /// 深度测试 只有Z坐标小于0的物体才能被看到
-                if (pixel.z < 1e-5 && std::fabsf(pixel.z) < m_zBuffer[row * m_framebufferWidth + col] && (-pixel.z) >= 0.1f && (-pixel.z) <= 100.0f)
+                // if (pixel.z < 1e-5 && std::fabsf(pixel.z) < m_zBuffer[row * m_framebufferWidth + col] && (-pixel.z) >= 0.1f && (-pixel.z) <= 100.0f)
+                if (std::fabsf(pixel.z) < m_zBuffer[row * m_framebufferWidth + col] && (-pixel.z) <= 100.0f)
                 {
                     m_zBuffer[row * m_framebufferWidth + col] = std::fabsf(pixel.z);
                     // 插值像素点处的顶点属性（目前只有颜色)  使用透视矫正
-                    float R = pixel.z * (barycentricCoord[0] * (float)m_color[m_indices[triangleIndex * 3 + 0]][0] / points[0].z + barycentricCoord[1] * (float)m_color[m_indices[triangleIndex * 3 + 0]][0] / points[1].z + barycentricCoord[2] * (float)m_color[m_indices[triangleIndex * 3 + 0]][0] / points[2].z);
-                    float G = pixel.z * (barycentricCoord[0] * (float)m_color[m_indices[triangleIndex * 3 + 1]][1] / points[0].z + barycentricCoord[1] * (float)m_color[m_indices[triangleIndex * 3 + 1]][1] / points[1].z + barycentricCoord[2] * (float)m_color[m_indices[triangleIndex * 3 + 1]][1] / points[2].z);
-                    float B = pixel.z * (barycentricCoord[0] * (float)m_color[m_indices[triangleIndex * 3 + 2]][2] / points[0].z + barycentricCoord[1] * (float)m_color[m_indices[triangleIndex * 3 + 2]][2] / points[1].z + barycentricCoord[2] * (float)m_color[m_indices[triangleIndex * 3 + 2]][2] / points[2].z);
+                    float R = pixel.z * (barycentricCoord[0] * (float)m_color[m_indices[triangleIndex * 3]][0] / points[0].z + barycentricCoord[1] * (float)m_color[m_indices[triangleIndex * 3 + 1]][0] / points[1].z + barycentricCoord[2] * (float)m_color[m_indices[triangleIndex * 3 + 2]][0] / points[2].z);
+                    float G = pixel.z * (barycentricCoord[0] * (float)m_color[m_indices[triangleIndex * 3]][1] / points[0].z + barycentricCoord[1] * (float)m_color[m_indices[triangleIndex * 3 + 1]][1] / points[1].z + barycentricCoord[2] * (float)m_color[m_indices[triangleIndex * 3 + 2]][1] / points[2].z);
+                    float B = pixel.z * (barycentricCoord[0] * (float)m_color[m_indices[triangleIndex * 3]][2] / points[0].z + barycentricCoord[1] * (float)m_color[m_indices[triangleIndex * 3 + 1]][2] / points[1].z + barycentricCoord[2] * (float)m_color[m_indices[triangleIndex * 3 + 2]][2] / points[2].z);
                     /// 更新frameBuffer中颜色值
                     m_framebuffer[row * m_framebufferWidth + col] = { R / 255.0f, G / 255.0f, B / 255.0f, 1.0f };
                 }
@@ -121,10 +117,16 @@ void Rasterizer::draw()
     }
 }
 
-void Rasterizer::clear()
+void Rasterizer::clear(Buffers buffers)
 {
-    m_zBuffer.clear();
-    m_framebuffer.clear();
+    if ((buffers & Rasterizer::Buffers::Color) == Rasterizer::Buffers::Color)
+    {
+        std::fill(m_framebuffer.begin(), m_framebuffer.end(), std::vector<float>(4, 0.0f));
+    }
+    if ((buffers & Rasterizer::Buffers::Depth) == Rasterizer::Buffers::Depth)
+    {
+        std::fill(m_zBuffer.begin(), m_zBuffer.end(), std::numeric_limits<float>::infinity());
+    }
 }
 
 void Rasterizer::saveResult()
@@ -140,10 +142,7 @@ void Rasterizer::saveResult()
             float r = m_framebuffer[row * m_framebufferWidth + col][0];
             float g = m_framebuffer[row * m_framebufferWidth + col][1];
             float b = m_framebuffer[row * m_framebufferWidth + col][2];
-            int ir = int(255.0f * r);
-            int ig = int(255.0f * g);
-            int ib = int(255.0f * b);
-            ofs << ir << ' ' << ig << ' ' << ib << '\n';
+            ofs << int(255.0f * r) << ' ' << int(255.0f * g) << ' ' << int(255.0f * b) << '\n';
         }
     }
     ofs.close();

@@ -28,11 +28,7 @@ using std::fabsf;
 #define MATH_EPSILON 0.000001f
 
 /// assert macros
-#ifdef _DEBUG
-    #define RAS_ASSERT(expression) assert(expression)
-#else
-    #define RAS_ASSERT(expression)
-#endif
+#define RAS_ASSERT(expression) assert(expression)
 
 /// Error macro
 #ifdef RAS_ERRORS_AS_WARNINGS

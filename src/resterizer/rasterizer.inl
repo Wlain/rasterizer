@@ -7,7 +7,12 @@ inline Camera& Rasterizer::refCamera()
     return m_camera;
 }
 
-inline void Rasterizer::setTopologyType(TopologyType type)
+inline Rasterizer::Primitive Rasterizer::topologyType() const
+{
+    return m_topologyType;
+}
+
+inline void Rasterizer::setTopologyType(Rasterizer::Primitive type)
 {
     m_topologyType = type;
 }
@@ -38,9 +43,19 @@ inline std::vector<std::array<unsigned char, 3>>& Rasterizer::refColor()
     return m_color;
 }
 
-inline std::vector<Vector3>& Rasterizer::refPosition()
+inline std::vector<Vector4>& Rasterizer::refPosition()
 {
     return m_position;
+}
+
+inline Rasterizer::Buffers operator|(Rasterizer::Buffers a, Rasterizer::Buffers b)
+{
+    return Rasterizer::Buffers((int)a | (int)b);
+}
+
+inline Rasterizer::Buffers operator&(Rasterizer::Buffers a, Rasterizer::Buffers b)
+{
+    return Rasterizer::Buffers((int)a & (int)b);
 }
 
 } // namespace rasterizer

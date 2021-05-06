@@ -10,7 +10,10 @@ class Vector4
 {
 public:
     Vector4();
+    Vector4(float x, float y, float z, float w);
     ~Vector4();
+    void perspectiveDivision();
+
 public:
     float x = 0.0f;
     float y = 0.0f;
