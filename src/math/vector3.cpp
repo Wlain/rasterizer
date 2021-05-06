@@ -143,5 +143,118 @@ void Vector3::set(const Vector3& p1, const Vector3& p2)
     y = p2.y - p1.y;
     z = p2.z - p1.z;
 }
+const Vector3& Vector3::zero()
+{
+    static Vector3 value(0.0f, 0.0f, 0.0f);
+    return value;
+}
+
+const Vector3& Vector3::one()
+{
+    static Vector3 value(1.0f, 1.0f, 1.0f);
+    return value;
+}
+const Vector3& Vector3::unitX()
+{
+    static Vector3 value(1.0f, 0.0f, 0.0f);
+    return value;
+}
+
+const Vector3& Vector3::unitY()
+{
+    static Vector3 value(0.0f, 1.0f, 0.0f);
+    return value;
+}
+
+const Vector3& Vector3::unitZ()
+{
+    static Vector3 value(0.0f, 0.0f, 1.0f);
+    return value;
+}
+
+bool Vector3::isZero() const
+{
+    return x == 0.0f && y == 0.0f && z == 0.0f;
+}
+
+bool Vector3::isOne() const
+{
+    return x == 1.0f && y == 1.0f && z == 1.0f;
+}
+
+float Vector3::angle(const Vector3& v1, const Vector3& v2)
+{
+    float dx = v1.y * v2.z - v1.z * v2.y;
+    float dy = v1.z * v2.x - v1.x * v2.z;
+    float dz = v1.x * v2.y - v1.y * v2.x;
+
+    return atan2f(sqrt(dx * dx + dy * dy + dz * dz) + MATH_EPSILON, dot(v1, v2));
+}
+
+void Vector3::add(const Vector3& v)
+{
+    x += v.x;
+    y += v.y;
+    z += v.z;
+}
+
+void Vector3::add(const Vector3& v1, const Vector3& v2, Vector3* dst)
+{
+    RAS_ASSERT(dst);
+
+    dst->x = v1.x + v2.x;
+    dst->y = v1.y + v2.y;
+    dst->z = v1.z + v2.z;
+}
+
+void Vector3::clamp(const Vector3& min, const Vector3& max)
+{
+    clamp(min, max, this);
+}
+
+void Vector3::clamp(const Vector3& min, const Vector3& max, Vector3* dst)
+{
+    RAS_ASSERT(dst);
+    RAS_ASSERT(!(min.x > max.x || min.y > max.y || min.z > max.z));
+    std::clamp(dst->x, min.x, max.x);
+    std::clamp(dst->y, min.y, max.y);
+    std::clamp(dst->z, min.z, max.z);
+}
+
+float Vector3::distance(const Vector3& v) const
+{
+    return sqrt(distanceSquard(v));
+}
+
+float Vector3::distanceSquard(const Vector3& v) const
+{
+    float dx = v.x - x;
+    float dy = v.y - y;
+    float dz = v.z - z;
+
+    return (dx * dx + dy * dy + dz * dz);
+}
+
+void Vector3::negate()
+{
+    x = -x;
+    y = -y;
+    z = -z;
+}
+
+void Vector3::scale(float scalar)
+{
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
+}
+
+void Vector3::smooth(const Vector3& target, float elapsedTime, float responseTime)
+{
+    if (elapsedTime > 0)
+    {
+        *this += (target - *this) * (elapsedTime / (elapsedTime + responseTime));
+    }
+}
 
 } // namespace rasterizer

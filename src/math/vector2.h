@@ -52,14 +52,14 @@ public:
     /// v1 - v2
     static void subtract(const Vector2& v1, const Vector2& v2, Vector2* dst);
     void smooth(const Vector2& target, float elapsedTime, float responseTime);
-    inline const Vector2 operator+(const Vector2& v) const;
+    inline Vector2 operator+(const Vector2& v) const;
     inline Vector2& operator+=(const Vector2& v);
-    inline const Vector2 operator-(const Vector2& v) const;
+    inline Vector2 operator-(const Vector2& v) const;
     inline Vector2& operator-=(const Vector2& v);
-    inline const Vector2 operator-() const;
-    inline const Vector2 operator*(float x) const;
+    inline Vector2 operator-() const;
+    inline Vector2 operator*(float x) const;
     inline Vector2& operator*=(float x);
-    inline const Vector2 operator/(float x) const;
+    inline Vector2 operator/(float x) const;
     inline bool operator<(const Vector2& v) const;
     inline bool operator==(const Vector2& v) const;
     inline bool operator!=(const Vector2& v) const;
@@ -69,7 +69,7 @@ public:
     float y = 0.0f;
 };
 
-inline const Vector2 operator*(float x, const Vector2& v);
+inline Vector2 operator*(float x, const Vector2& v);
 
 } // namespace rasterizer
 

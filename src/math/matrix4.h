@@ -38,9 +38,9 @@ public:
     static void createOrthographicOffCenter(float left, float right, float bottom, float top,
                                             float zNearPlane, float zFarPlane, Matrix4* dst);
     static void createBillboard(const Vector3& objectPosition, const Vector3& cameraPosition,
-                                const Vector3& cameraUpPosition, Matrix4* dst);
+                                const Vector3& cameraUpVector, Matrix4* dst);
     static void createScale(const Vector3& scale, Matrix4* dst);
-    static void createScale(float xScale, float yScale, Matrix4* dst);
+    static void createScale(float xScale, float yScale, float zScale,Matrix4* dst);
     static void createRotation(const Vector3& axis, float angle, Matrix4* dst);
     static void createRotationX(float angle, Matrix4* dst);
     static void createRotationY(float angle, Matrix4* dst);

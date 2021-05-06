@@ -11,7 +11,7 @@ class Vector3
 public:
     Vector3();
     Vector3(float x, float y, float z);
-    Vector3(const float* array);
+    explicit Vector3(const float* array);
     Vector3(const Vector3& p1, const Vector3& p2);
     Vector3(const Vector3& copy);
     ~Vector3();
@@ -46,14 +46,14 @@ public:
     void subtract(const Vector3& v);
     static void subtract(const Vector3& v1, const Vector3& v2, Vector3* dst);
     void smooth(const Vector3& target, float elapsedTime, float responseTime);
-    inline const Vector3 operator+(const Vector3& v) const;
+    inline Vector3 operator+(const Vector3& v) const;
     inline Vector3& operator+=(const Vector3& v);
-    inline const Vector3 operator-(const Vector3& v) const;
+    inline Vector3 operator-(const Vector3& v) const;
     inline Vector3& operator-=(const Vector3& v);
-    inline const Vector3 operator-() const;
-    inline const Vector3 operator*(const Vector3& v) const;
-    inline Vector3& operator*=(const Vector3 v);
-    inline const Vector3 operator/(float x) const;
+    inline Vector3 operator-() const;
+    inline Vector3 operator*(float v) const;
+    inline Vector3& operator*=(const Vector3& v);
+    inline Vector3 operator/(float x) const;
     inline bool operator<(const Vector3& v) const;
     inline bool operator==(const Vector3& v) const;
     inline bool operator!=(const Vector3& v) const;
@@ -64,7 +64,7 @@ public:
     float z = 0.0f;
 };
 
-inline const Vector3 operator*(float x, const Vector3& v);
+inline Vector3 operator*(float x, const Vector3& v);
 } // namespace rasterizer
 
 #include "vector3.inl"
