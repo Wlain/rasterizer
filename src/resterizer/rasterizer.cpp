@@ -75,7 +75,7 @@ bool Rasterizer::insideTriangle(const Vector3& point, const std::vector<Vector4>
     return false;
 }
 
-void Rasterizer::draw()
+void Rasterizer::drawTriangles()
 {
     /// 开始遍历像素
     for (int row = 0; row < m_framebufferHeight; ++row)

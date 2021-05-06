@@ -45,7 +45,7 @@ public:
      * 2.如果在三角形中，计算其三角形重心坐标，并进行顶点属性插值
      * 3.将颜色信息写入frameBuffer
      * */
-    void draw();
+    void drawTriangles();
     void clear(Buffers buffers);
     void saveResult();
     inline Camera& refCamera();
