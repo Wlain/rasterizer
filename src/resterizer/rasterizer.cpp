@@ -102,9 +102,6 @@ void Rasterizer::clear()
 {
     m_zBuffer.clear();
     m_framebuffer.clear();
-    m_color.clear();
-    m_position.clear();
-    m_texCoord.clear();
 }
 
 void Rasterizer::saveResult()

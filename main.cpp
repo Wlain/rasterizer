@@ -87,6 +87,8 @@ int main()
     color.push_back({255, 255, 0 });
     color.push_back({0, 255, 255 });
     color.push_back({255, 0, 255 });
+    /// 清屏
+    triangle.clear();
     /// 写入framebuffer
     triangle.draw();
     /// 设置保存的路径
