@@ -32,7 +32,8 @@ public:
     TopologyType topologyType() const;
     void initWithFrameBufferSize(int width, int height);
     inline void setTopologyType(TopologyType type);
-    inline void setFilePath(const std::string_view path);
+    void setGeometricTransform();
+    inline void setFilePath(std::string_view path);
     /**
      * 1.判断每个像素点是否在屏幕对应的三角形中。
      * 2.如果在三角形中，计算其三角形重心坐标，并进行顶点属性插值
@@ -69,6 +70,7 @@ private:
     int m_framebufferWidth = 0;
     int m_framebufferHeight = 0;
     std::string_view m_filePath;
+    bool m_enableMSAA = false;
 };
 } // namespace rasterizer
 

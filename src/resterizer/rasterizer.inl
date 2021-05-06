@@ -12,7 +12,7 @@ inline void Rasterizer::setTopologyType(TopologyType type)
     m_topologyType = type;
 }
 
-inline void Rasterizer::setFilePath(const std::string_view path)
+inline void Rasterizer::setFilePath(std::string_view path)
 {
     m_filePath = path;
 }

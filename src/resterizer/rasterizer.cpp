@@ -22,14 +22,38 @@ void Rasterizer::initWithFrameBufferSize(int width, int height)
     m_framebuffer.resize(bufferSize, std::vector<float>(4, 0.0f));
 }
 
-Rasterizer::TopologyType Rasterizer::topologyType() const
+void Rasterizer::setGeometricTransform()
 {
-    return m_topologyType;
+    const auto w = 1.0f; /// 暂时写死为1
+    float halfScreenWidth = (float)m_framebufferWidth / 2.0f;
+    float halfScreenHeight = (float)m_framebufferHeight / 2.0f;
+    for (auto& v : m_position)
+    {
+        /// 模型变换 -> 世界坐标系
+        m_camera.getModelMatrix().transformPoint(&v);
+        /// 视图变换 -> 观察者坐标系
+        m_camera.getViewMatrix().transformPoint(&v);
+        /// 投影变换 -> 裁剪坐标系
+        m_camera.getProjectionMatrix().transformPoint(&v);
+        /// 透视除法 -> 规范化坐标系
+        v.x / w;
+        v.y / w;
+        v.z / w;
+        /// 视口变换 -> 屏幕坐标系
+        /**
+        * 视口变换的详细步骤：
+        * 1.丢弃z值
+        * 2.缩放
+        * 3.平移
+        * */
+        v.x = (v.x + 1.0f) + halfScreenWidth;
+        v.y = (1.0f - v.y) + halfScreenHeight;
+    }
 }
 
 bool Rasterizer::insideTriangle(const Vector3& point, const std::vector<Vector3>& vertexes, std::vector<float>& barycentricCoord)
 {
-    RAS_ASSERT(vertexes.size() == 3);
+    RAS_ASSERT(vertexes.size() == 3)
     Vector2 abVector(vertexes[1].x - vertexes[0].x, vertexes[1].y - vertexes[0].y);
     Vector2 bcVector(vertexes[2].x - vertexes[1].x, vertexes[2].y - vertexes[1].y);
     Vector2 caVector(vertexes[0].x - vertexes[2].x, vertexes[0].y - vertexes[2].y);
@@ -59,7 +83,6 @@ bool Rasterizer::insideTriangle(const Vector3& point, const std::vector<Vector3>
 void Rasterizer::draw()
 {
     /// 开始遍历像素
-    bool isOpenMsaa = false;
     for (int row = 0; row < m_framebufferHeight; ++row)
     {
         for (int col = 0; col < m_framebufferWidth; ++col)

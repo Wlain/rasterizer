@@ -122,7 +122,7 @@ private:
      * 2   6   10  14
      * 3   7   11  15
      */
-    float m[16];
+    float m[16]{};
 };
 
 inline Vector3& operator*=(Vector3& v, const Matrix4& m);
