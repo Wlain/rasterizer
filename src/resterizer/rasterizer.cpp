@@ -100,8 +100,7 @@ void Rasterizer::drawTriangles()
                 /// 插值像素点的Z坐标
                 /// 根据公式： 1/z = λ * 1/z0 + (1-λ) * 1/z1
                 pixel.z = 1.0f / (barycentricCoord[0] / points[0].z + barycentricCoord[1] / points[1].z + barycentricCoord[2] / points[2].z);
-                /// 深度测试 只有Z坐标小于0的物体才能被看到
-                // if (pixel.z < 1e-5 && std::fabsf(pixel.z) < m_zBuffer[row * m_framebufferWidth + col] && (-pixel.z) >= 0.1f && (-pixel.z) <= 100.0f)
+                /// 深度测试
                 if (std::fabsf(pixel.z) < m_zBuffer[row * m_framebufferWidth + col] && (-pixel.z) <= 100.0f)
                 {
                     m_zBuffer[row * m_framebufferWidth + col] = std::fabsf(pixel.z);
