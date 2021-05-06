@@ -73,5 +73,5 @@ inline const Vector2 operator*(float x, const Vector2& v);
 
 } // namespace rasterizer
 
-#include "Vector2.inl"
+#include "vector2.inl"
 #endif //RASTERIZER_VECTOR2_H
