@@ -7,8 +7,6 @@
 #include "commonDefine.h"
 #include "utilFunction.h"
 
-extern bool insideTriangle(const rasterizer::Vector3& point, const std::vector<rasterizer::Vector4>& vertexes, std::vector<float>& barycentricCoord);
-
 namespace rasterizer
 {
 Rasterizer::Rasterizer() = default;

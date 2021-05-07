@@ -14,7 +14,7 @@
    * 判断当前点是否在三角形内部
    * @param point 当前点坐标
    * @param vertexes 三角形顶点坐标
-   * @param barycentricCoord 中心坐标
+   * @param barycentricCoord 重心坐标
    * @return
    */
 bool insideTriangle(const rasterizer::Vector3& point, const std::vector<rasterizer::Vector4>& vertexes, std::vector<float>& barycentricCoord);

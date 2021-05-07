@@ -475,5 +475,62 @@ void Matrix4::rotateY(float angle)
 void Matrix4::rotateY(float angle, Matrix4* dst)
 {
 }
+void Matrix4::rotateZ(float angle)
+{
+}
+void Matrix4::rotateZ(float angle, Matrix4* dst)
+{
+}
+void Matrix4::scale(float value)
+{
+}
+void Matrix4::scale(float value, Matrix4* dst) const
+{
+}
+void Matrix4::scale(float xScale, float yScale, float zScale)
+{
+}
+void Matrix4::scale(float xScale, float yScale, float zScale, Matrix4* dst) const
+{
+}
+void Matrix4::scale(const Vector3& scale)
+{
+}
+void Matrix4::scale(const Vector3& scale, Matrix4* dst) const
+{
+}
+void Matrix4::setIdentity()
+{
+}
+void Matrix4::setZero()
+{
+}
+void Matrix4::subtract(const Matrix4& m)
+{
+}
+void Matrix4::subtract(const Matrix4& m1, const Matrix4& m2, Matrix4* dst)
+{
+}
+void Matrix4::transformPoint(const Vector3& point, Vector3* dst) const
+{
+}
+void Matrix4::translate(float x, float y, float z)
+{
+}
+void Matrix4::translate(float x, float y, float z, Matrix4* dst) const
+{
+}
+void Matrix4::translate(const Vector3& t)
+{
+}
+void Matrix4::translate(const Vector3& t, Matrix4* dst) const
+{
+}
+void Matrix4::transpose()
+{
+}
+void Matrix4::transpose(Matrix4* dst) const
+{
+}
 
 } // namespace rasterizer
