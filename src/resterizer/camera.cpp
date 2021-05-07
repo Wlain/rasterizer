@@ -23,4 +23,4 @@ void Camera::setProjectionMatrix(const Matrix4& matrix)
 {
     m_projectionMatrix = matrix;
 }
-}
+} // namespace rasterizer

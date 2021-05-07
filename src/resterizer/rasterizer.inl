@@ -32,7 +32,6 @@ inline std::vector<std::vector<float>>& Rasterizer::refFramebuffer()
     return m_framebuffer;
 }
 
-
 inline std::vector<unsigned short>& Rasterizer::refIndices()
 {
     return m_indices;
